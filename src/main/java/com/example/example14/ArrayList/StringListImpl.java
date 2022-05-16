@@ -1,5 +1,6 @@
 package com.example.example14.ArrayList;
 
+import com.example.example14.Exception.InvalidIndexException;
 import com.example.example14.Exception.ItemNotFoundException;
 
 import java.util.Objects;
@@ -43,29 +44,28 @@ public class StringListImpl implements StringList {
 
     @Override
     public String remove(String item) {
-        int a = -1;
-        for (int i = 0; i < size; i++) {
-            if (item.equals(array[i])) {
-                a = i;
-                break;
-            }
-        }
-        if (a != -1) {
-            remove(a);
-        } else {
+        int itemIndex = indexOf(item);
+        if (itemIndex == -1) {
             throw new ItemNotFoundException();
         }
+        if (itemIndex != array.length - 1) {
+            System.arraycopy(array, itemIndex + 1, array, itemIndex, size - itemIndex);
+        }
+        size--;
         return item;
     }
 
     @Override
     public String remove(int index) {
-        String element = get(index);
-        for (int i = index; i < size - 1; i++) {
-            array[i] = array[i + 1];
+        if (index >= size || index < 0) {
+            throw new InvalidIndexException();
+        }
+        String itemToRemove = array[index];
+        if (index != array.length - 1) {
+            System.arraycopy(array, index + 1, array, index, size - index);
         }
         size--;
-        return element;
+        return itemToRemove;
     }
 
     @Override
@@ -148,7 +148,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public void clear() {
-        array = new String[13];
+        array = new String[10];
         size = 0;
     }
 
